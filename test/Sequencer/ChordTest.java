@@ -93,37 +93,37 @@ class ChordTest {
 	@Test
 	void testGetChordType_MajorChord() {
 		Chord sampleChord = new Chord("C");
-		assertThat(sampleChord.getChordType(), is(Chord.type.major));
+		assertThat(sampleChord.getChordType(), is(ChordDetail.type.major));
 	}
 
 	@Test
 	void testGetChordType_MinorChord() {
 		Chord sampleChord = new Chord("Dm");
-		assertThat(sampleChord.getChordType(), is(Chord.type.minor));
+		assertThat(sampleChord.getChordType(), is(ChordDetail.type.minor));
 	}
 
 	@Test
 	void testGetChordType_OtherChord() {
 		Chord sampleChord = new Chord("Bmb5");
-		assertThat(sampleChord.getChordType(), is(Chord.type.other));
+		assertThat(sampleChord.getChordType(), is(ChordDetail.type.other));
 	}
 
 	@Test
 	void testGetChordType_MajorSeventhChord() {
 		Chord sampleChord = new Chord("C7");
-		assertThat(sampleChord.getChordType(), is(Chord.type.majorSeventh));
+		assertThat(sampleChord.getChordType(), is(ChordDetail.type.majorSeventh));
 	}
 
 	@Test
 	void testGetChordType_MinorSeventhChord() {
 		Chord sampleChord = new Chord("Dm7");
-		assertThat(sampleChord.getChordType(), is(Chord.type.minorSeventh));
+		assertThat(sampleChord.getChordType(), is(ChordDetail.type.minorSeventh));
 	}
 
 	@Test
 	void testGetChordType_OtherSeventhChord() {
 		Chord sampleChord = new Chord("Bm7b5");
-		assertThat(sampleChord.getChordType(), is(Chord.type.otherSeventh));
+		assertThat(sampleChord.getChordType(), is(ChordDetail.type.otherSeventh));
 	}
 
 }
