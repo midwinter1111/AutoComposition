@@ -1,18 +1,26 @@
 package Sequencer;
 
+import Sequencer.ChordDetail.family;
+import Sequencer.ChordDetail.function;
+import Sequencer.ChordDetail.role;
+import Sequencer.ChordDetail.type;
+
 public class Chord {
 
 	private String chordName = "";
 	private int[] notes;
 
-	public enum type {
-		major, minor, other, majorSeventh, minorSeventh, otherSeventh
-	};
+	private type type;
+	private role role;
+	private family family;
+	private function function;
 
 	public Chord(String chordName) {
 		this.chordName = chordName;
 		notes = new int[3]; // 暫定的に3和音に設定しておく
 		setNotesByChordName(chordName);
+		setType();
+		setChordDetail();
 	}
 
 	public void setNotesByChordName(String chordName) {
@@ -114,6 +122,10 @@ public class Chord {
 		}
 	}
 
+	public void setRole() {
+
+	}
+
 	public void fixNotesByOctave(int octave) {
 		int fixValue = (octave - 4) * 12;
 		for (int i = 0; i < notes.length; i++) {
@@ -155,6 +167,75 @@ public class Chord {
 				return type.otherSeventh;
 			}
 		}
+	}
+
+	private void setType() {
+		this.type = getChordType();
+	}
+
+	private void setChordDetail() {
+		if (type.equals(ChordDetail.type.major)) {
+			if (chordName.equals("C")) {
+				this.role = ChordDetail.role.tonic;
+				this.family = ChordDetail.family.parent;
+				this.function = ChordDetail.function.charge;
+			} else if (chordName.equals("Dm")) {
+				this.role = ChordDetail.role.subDominant;
+				this.family = ChordDetail.family.child;
+				this.function = ChordDetail.function.love;
+			} else if (chordName.equals("Em")) {
+				this.role = ChordDetail.role.tonic;
+				this.family = ChordDetail.family.child;
+				this.function = ChordDetail.function.charge;
+			} else if (chordName.equals("F")) {
+				this.role = ChordDetail.role.subDominant;
+				this.family = ChordDetail.family.parent;
+				this.function = ChordDetail.function.love;
+			} else if (chordName.equals("G")) {
+				this.role = ChordDetail.role.dominant;
+				this.family = ChordDetail.family.parent;
+				this.function = ChordDetail.function.adventure;
+			} else if (chordName.equals("Am")) {
+				this.role = ChordDetail.role.tonic;
+				this.family = ChordDetail.family.child;
+				this.function = ChordDetail.function.charge;
+			} else if (chordName.equals("Bmb5")) {
+				this.role = ChordDetail.role.dominant;
+				this.family = ChordDetail.family.child;
+				this.function = ChordDetail.function.adventure;
+			}
+		} else if (type.equals(ChordDetail.type.minor)) {
+			if (chordName.equals("Am")) {
+				this.role = ChordDetail.role.tonic;
+				this.family = ChordDetail.family.parent;
+				this.function = ChordDetail.function.charge;
+			} else if (chordName.equals("Bmb5")) {
+				this.role = ChordDetail.role.subDominant;
+				this.family = ChordDetail.family.child;
+				this.function = ChordDetail.function.love;
+			} else if (chordName.equals("C")) {
+				this.role = ChordDetail.role.tonic;
+				this.family = ChordDetail.family.child;
+				this.function = ChordDetail.function.charge;
+			} else if (chordName.equals("Dm")) {
+				this.role = ChordDetail.role.subDominant;
+				this.family = ChordDetail.family.parent;
+				this.function = ChordDetail.function.love;
+			} else if (chordName.equals("E")) {
+				this.role = ChordDetail.role.dominant;
+				this.family = ChordDetail.family.parent;
+				this.function = ChordDetail.function.adventure;
+			} else if (chordName.equals("F")) {
+				this.role = ChordDetail.role.tonicAndSubDominant;
+				this.family = ChordDetail.family.child;
+				this.function = ChordDetail.function.charge;
+			} else if (chordName.equals("G")) {
+				this.role = ChordDetail.role.subDominant;
+				this.family = ChordDetail.family.child;
+				this.function = ChordDetail.function.love;
+			}
+		}
+
 	}
 
 }
