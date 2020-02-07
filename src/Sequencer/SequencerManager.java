@@ -22,8 +22,13 @@ public class SequencerManager {
 	private static int TICK = 480;
 	private int position = 480 * 4; // 1小節目は休符
 
+	private String key = "major";
+
+	private boolean useSecondaryDominant = true;
+	private double pSecondaryDominant = 0.5;
+
 	public SequencerManager() throws InvalidMidiDataException, MidiUnavailableException {
-		sequence = new Sequence(Sequence.PPQ, 480);
+		sequence = new Sequence(Sequence.PPQ, TICK);
 		track = sequence.createTrack();
 		synthesizer = MidiSystem.getSynthesizer();
 		synthesizer.open();
@@ -55,47 +60,92 @@ public class SequencerManager {
 	public void selectChordProgression() {
 		try {
 
-			SimpleDiatonicStrategy strategy = new SimpleDiatonicStrategy("C", "C", 4, "major");
+			// コード進行の生成
+			SimpleDiatonicStrategy strategy = new SimpleDiatonicStrategy("C", "C", 8, key);
 			List<InputChordData> sequence = strategy.makeSequence();
 
-			for(int i=0; i<sequence.size(); i++) {
+			for (int i = 0; i < sequence.size(); i++) {
 				addChordToTrack(0, sequence.get(i).getChord(), sequence.get(i).getDuration());
+			}
+
+			// セカンダリードミナントの利用
+			if (useSecondaryDominant) {
+				makeSecondaryDominantSequence(sequence);
+			}
+
+			System.out.println();
+			// デバッグ用
+			for (int i = 0; i < sequence.size(); i++) {
 				System.out.print(sequence.get(i).getChord().getChordName() + ", ");
 			}
 
-			/*
-			Chord chord1 = new Chord("C");
-			Chord chord2 = new Chord("Dm");
-			Chord chord3 = new Chord("Em");
-			Chord chord4 = new Chord("F");
-			Chord chord5 = new Chord("G");
-			Chord chord6 = new Chord("Am");
-			Chord chord7 = new Chord("Bmb5");
-			Chord chord8 = new Chord("C7");
-			Chord chord9 = new Chord("Dm7");
-			Chord chord10 = new Chord("Em7");
-			Chord chord11 = new Chord("F7");
-			Chord chord12 = new Chord("G7");
-			Chord chord13 = new Chord("Am7");
-			Chord chord14 = new Chord("Bm7b5");
-			addChordToTrack(0, chord1, 480);
-			addChordToTrack(0, chord2, 480);
-			addChordToTrack(0, chord3, 480);
-			addChordToTrack(0, chord4, 480);
-			addChordToTrack(0, chord5, 480);
-			addChordToTrack(0, chord6, 480);
-			addChordToTrack(0, chord7, 480);
-			addChordToTrack(0, chord8, 480);
-			addChordToTrack(0, chord9, 480);
-			addChordToTrack(0, chord10, 480);
-			addChordToTrack(0, chord11, 480);
-			addChordToTrack(0, chord12, 480);
-			addChordToTrack(0, chord13, 480);
-			addChordToTrack(0, chord14, 480);*/
 		} catch (InvalidMidiDataException e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	private void makeSecondaryDominantSequence(List<InputChordData> sequence) {
+
+		if (key.equals("major")) {
+			// 置き換え
+			for (int i = 0; i < sequence.size() - 1; i++) {
+				String currentChordName = sequence.get(i).getChord().getChordName();
+				String nextChordName = sequence.get(i + 1).getChord().getChordName();
+				if (currentChordName.equals("Am") && nextChordName.equals("Dm")) {
+					if (Math.random() < 0.5) {
+						sequence.set(i, new InputChordData(new Chord("A7"), TICK));
+					}
+				} else if (currentChordName.equals("Bmb5") && nextChordName.equals("Em")) {
+					if (Math.random() < 0.5) {
+						sequence.set(i, new InputChordData(new Chord("B7"), TICK));
+					}
+				} else if (currentChordName.equals("C") && nextChordName.equals("F")) {
+					if (Math.random() < 0.5) {
+						sequence.set(i, new InputChordData(new Chord("C7"), TICK));
+					}
+				} else if (currentChordName.equals("Dm") && nextChordName.equals("G")) {
+					if (Math.random() < 0.5) {
+						sequence.set(i, new InputChordData(new Chord("D7"), TICK));
+					}
+				} else if (currentChordName.equals("Em") && nextChordName.equals("Am")) {
+					if (Math.random() < 0.5) {
+						sequence.set(i, new InputChordData(new Chord("E7"), TICK));
+					}
+				}
+			}
+		} else if (key.equals("minor")) {
+			// 置き換え
+			for (int i = 0; i < sequence.size() - 1; i++) {
+				String currentChordName = sequence.get(i).getChord().getChordName();
+				String nextChordName = sequence.get(i + 1).getChord().getChordName();
+				if (currentChordName.equals("F") && nextChordName.equals("Bmb5")) {
+					if (Math.random() < 0.5) {
+						sequence.set(i, new InputChordData(new Chord("F7"), TICK));
+					}
+				} else if (currentChordName.equals("G") && nextChordName.equals("C")) {
+					if (Math.random() < 0.5) {
+						sequence.set(i, new InputChordData(new Chord("G7"), TICK));
+					}
+				} else if (currentChordName.equals("Am") && nextChordName.equals("Dm")) {
+					if (Math.random() < 0.5) {
+						sequence.set(i, new InputChordData(new Chord("A7"), TICK));
+					}
+				} else if (currentChordName.equals("Bmb5") && nextChordName.equals("E")) {
+					if (Math.random() < 0.5) {
+						sequence.set(i, new InputChordData(new Chord("B7"), TICK));
+					}
+				} else if (currentChordName.equals("C") && nextChordName.equals("F")) {
+					if (Math.random() < 0.5) {
+						sequence.set(i, new InputChordData(new Chord("C7"), TICK));
+					}
+				} else if (currentChordName.equals("Dm") && nextChordName.equals("G")) {
+					if (Math.random() < 0.5) {
+						sequence.set(i, new InputChordData(new Chord("D7"), TICK));
+					}
+				}
+			}
+		}
 	}
 
 }
