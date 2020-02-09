@@ -20,7 +20,7 @@ public class SequencerManager {
 	Sequencer sequencer = null;
 
 	private static int TICK = 480;
-	private int position = 480 * 4; // 1小節目は休符
+	private int position = TICK * 4; // 1小節目は休符
 
 	private String key = "major";
 
@@ -62,7 +62,7 @@ public class SequencerManager {
 
 			// コード進行の生成
 			SimpleDiatonicStrategy strategy = new SimpleDiatonicStrategy("C", "C", 8, key);
-			List<InputChordData> sequence = strategy.makeSequence();
+			List<InputChordData> sequence = strategy.makeSequence(960);
 
 			for (int i = 0; i < sequence.size(); i++) {
 				addChordToTrack(0, sequence.get(i).getChord(), sequence.get(i).getDuration());
@@ -93,23 +93,23 @@ public class SequencerManager {
 				String currentChordName = sequence.get(i).getChord().getChordName();
 				String nextChordName = sequence.get(i + 1).getChord().getChordName();
 				if (currentChordName.equals("Am") && nextChordName.equals("Dm")) {
-					if (Math.random() < 0.5) {
+					if (Math.random() < pSecondaryDominant) {
 						sequence.set(i, new InputChordData(new Chord("A7"), TICK));
 					}
 				} else if (currentChordName.equals("Bmb5") && nextChordName.equals("Em")) {
-					if (Math.random() < 0.5) {
+					if (Math.random() < pSecondaryDominant) {
 						sequence.set(i, new InputChordData(new Chord("B7"), TICK));
 					}
 				} else if (currentChordName.equals("C") && nextChordName.equals("F")) {
-					if (Math.random() < 0.5) {
+					if (Math.random() < pSecondaryDominant) {
 						sequence.set(i, new InputChordData(new Chord("C7"), TICK));
 					}
 				} else if (currentChordName.equals("Dm") && nextChordName.equals("G")) {
-					if (Math.random() < 0.5) {
+					if (Math.random() < pSecondaryDominant) {
 						sequence.set(i, new InputChordData(new Chord("D7"), TICK));
 					}
 				} else if (currentChordName.equals("Em") && nextChordName.equals("Am")) {
-					if (Math.random() < 0.5) {
+					if (Math.random() < pSecondaryDominant) {
 						sequence.set(i, new InputChordData(new Chord("E7"), TICK));
 					}
 				}
@@ -120,27 +120,27 @@ public class SequencerManager {
 				String currentChordName = sequence.get(i).getChord().getChordName();
 				String nextChordName = sequence.get(i + 1).getChord().getChordName();
 				if (currentChordName.equals("F") && nextChordName.equals("Bmb5")) {
-					if (Math.random() < 0.5) {
+					if (Math.random() < pSecondaryDominant) {
 						sequence.set(i, new InputChordData(new Chord("F7"), TICK));
 					}
 				} else if (currentChordName.equals("G") && nextChordName.equals("C")) {
-					if (Math.random() < 0.5) {
+					if (Math.random() < pSecondaryDominant) {
 						sequence.set(i, new InputChordData(new Chord("G7"), TICK));
 					}
 				} else if (currentChordName.equals("Am") && nextChordName.equals("Dm")) {
-					if (Math.random() < 0.5) {
+					if (Math.random() < pSecondaryDominant) {
 						sequence.set(i, new InputChordData(new Chord("A7"), TICK));
 					}
 				} else if (currentChordName.equals("Bmb5") && nextChordName.equals("E")) {
-					if (Math.random() < 0.5) {
+					if (Math.random() < pSecondaryDominant) {
 						sequence.set(i, new InputChordData(new Chord("B7"), TICK));
 					}
 				} else if (currentChordName.equals("C") && nextChordName.equals("F")) {
-					if (Math.random() < 0.5) {
+					if (Math.random() < pSecondaryDominant) {
 						sequence.set(i, new InputChordData(new Chord("C7"), TICK));
 					}
 				} else if (currentChordName.equals("Dm") && nextChordName.equals("G")) {
-					if (Math.random() < 0.5) {
+					if (Math.random() < pSecondaryDominant) {
 						sequence.set(i, new InputChordData(new Chord("D7"), TICK));
 					}
 				}
