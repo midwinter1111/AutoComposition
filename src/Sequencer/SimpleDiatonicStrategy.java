@@ -24,7 +24,7 @@ public class SimpleDiatonicStrategy {
 		List<InputChordData> sequence = new ArrayList<>();
 
 		Chord start = new Chord(startChordName);
-		sequence.add(new InputChordData(start, tick));
+		sequence.add(new InputChordData(start, tick, key));
 
 		String currentChordName = start.getChordName();
 
@@ -53,7 +53,7 @@ public class SimpleDiatonicStrategy {
 			}
 
 			Chord nextChord = new Chord(currentChordName);
-			sequence.add(new InputChordData(nextChord, tick));
+			sequence.add(new InputChordData(nextChord, tick, key));
 		} while ((sequence.size() < minLength) || (!currentChordName.equals(endChordName)));
 
 		return sequence;

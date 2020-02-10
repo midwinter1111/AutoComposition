@@ -24,7 +24,7 @@ public class SimpleIntroStrategy {
 		List<InputChordData> sequence = new ArrayList<>();
 
 		Chord start = new Chord(startChordName);
-		sequence.add(new InputChordData(start, tick));
+		sequence.add(new InputChordData(start, tick, key));
 
 		String currentChordName = start.getChordName();
 
@@ -38,7 +38,7 @@ public class SimpleIntroStrategy {
 				if (currentChordName.equals("Bmb5") && nextChordName.equals("E7")) {
 					key = "minor";
 				}
-				sequence.add(new InputChordData(new Chord(nextChordName), tick));
+				sequence.add(new InputChordData(new Chord(nextChordName), tick, key));
 				currentChordName = nextChordName;
 			} else if (key.equals("minor")) {
 				nextList = NextChordListForDiatonic.getNextChordListInMinorKey(currentChord.getChordName());
@@ -47,7 +47,7 @@ public class SimpleIntroStrategy {
 				if (currentChordName.equals("G") && nextChordName.equals("C")) {
 					key = "major";
 				}
-				sequence.add(new InputChordData(new Chord(nextChordName), tick));
+				sequence.add(new InputChordData(new Chord(nextChordName), tick, key));
 				currentChordName = nextChordName;
 			} else {
 				// 異常

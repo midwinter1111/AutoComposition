@@ -81,14 +81,14 @@ public class GreenGreensStrategy {
 			break;
 		}
 
-		sequence.add(new InputChordData(currentChord, 240));
-		sequence.add(new InputChordData(nextChord, 240));
-		sequence.add(new InputChordData(nextChord, 240));
-		sequence.add(new InputChordData(nextChord, 240));
-		sequence.add(new InputChordData(nextChord, 240));
-		sequence.add(new InputChordData(nextChord, 240));
-		sequence.add(new InputChordData(nextChord, 240));
-		sequence.add(new InputChordData(nextChord, 240));
+		sequence.add(new InputChordData(currentChord, 240, key));
+		sequence.add(new InputChordData(nextChord, 240, key));
+		sequence.add(new InputChordData(nextChord, 240, key));
+		sequence.add(new InputChordData(nextChord, 240, key));
+		sequence.add(new InputChordData(nextChord, 240, key));
+		sequence.add(new InputChordData(nextChord, 240, key));
+		sequence.add(new InputChordData(nextChord, 240, key));
+		sequence.add(new InputChordData(nextChord, 240, key));
 	}
 
 	public void addShortRhythm(Chord currentChord, List<InputChordData> sequence) {
@@ -132,10 +132,10 @@ public class GreenGreensStrategy {
 			break;
 		}
 
-		sequence.add(new InputChordData(currentChord, 240));
-		sequence.add(new InputChordData(nextChord, 240));
-		sequence.add(new InputChordData(nextChord, 240));
-		sequence.add(new InputChordData(nextChord, 240));
+		sequence.add(new InputChordData(currentChord, 240, key));
+		sequence.add(new InputChordData(nextChord, 240, key));
+		sequence.add(new InputChordData(nextChord, 240, key));
+		sequence.add(new InputChordData(nextChord, 240, key));
 	}
 
 	public void addFinalRhythm(Chord currentChord, List<InputChordData> sequence) {
@@ -179,8 +179,8 @@ public class GreenGreensStrategy {
 			break;
 		}
 
-		sequence.add(new InputChordData(currentChord, 960));
-		sequence.add(new InputChordData(nextChord, 960));
+		sequence.add(new InputChordData(currentChord, 960, key));
+		sequence.add(new InputChordData(nextChord, 960, key));
 	}
 
 	public Chord moveToNextChord(Chord currentChord) {
