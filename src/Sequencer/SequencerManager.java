@@ -61,28 +61,56 @@ public class SequencerManager {
 		try {
 
 			// コード進行の生成
-			SimpleDiatonicStrategy strategy = new SimpleDiatonicStrategy("C", "C", 8, key);
-			List<InputChordData> sequence = strategy.makeSequence(960);
+			//GreenGreensStrategy strategy = new GreenGreensStrategy("C", "C", 8, key);
+			SimpleIntroStrategy strategy = new SimpleIntroStrategy("C", "C", 8, key);
+			List<InputChordData> chordSequence = strategy.makeSequence(480 * 4);
 
-			for (int i = 0; i < sequence.size(); i++) {
-				addChordToTrack(0, sequence.get(i).getChord(), sequence.get(i).getDuration());
+			// チェレスタ
+			// 音色参考 https://mocha-java.com/program-change-sound-bank-1/
+			track.add(new MidiEvent(new ShortMessage(ShortMessage.PROGRAM_CHANGE, 0, 8, 0), TICK));
+			for (int i = 0; i < chordSequence.size(); i++) {
+				if(i == chordSequence.size()-1) {
+					addChordToTrack(0, chordSequence.get(i).getChord(), chordSequence.get(i).getDuration());
+				} else {
+					addChordToTrack(0, chordSequence.get(i).getChord(), chordSequence.get(i).getDuration()/2);
+					addChordToTrack(0, chordSequence.get(i).getChord(), chordSequence.get(i).getDuration()/2);
+				}
 			}
 
 			// セカンダリードミナントの利用
 			if (useSecondaryDominant) {
-				makeSecondaryDominantSequence(sequence);
+				makeSecondaryDominantSequence(chordSequence);
 			}
 
 			System.out.println();
 			// デバッグ用
-			for (int i = 0; i < sequence.size(); i++) {
-				System.out.print(sequence.get(i).getChord().getChordName() + ", ");
+			for (int i = 0; i < chordSequence.size(); i++) {
+				System.out.print(chordSequence.get(i).getChord().getChordName() + ", ");
+			}
+
+			// メロディの生成
+			SimpleMelodyStrategy mStrategy = new SimpleMelodyStrategy(chordSequence.get(0).getChord(), TICK*4*8);
+			List<Melody> melodySequence = mStrategy.makeSequence(TICK);
+			// addする前に楽譜の最初に戻す
+			resetPosition();
+
+			// マリンバ
+			// 音色参考 https://mocha-java.com/program-change-sound-bank-1/
+			track.add(new MidiEvent(new ShortMessage(ShortMessage.PROGRAM_CHANGE, 1, 12, 0), TICK));
+
+			for(int i=0; i<melodySequence.size(); i++) {
+				addNoteToTrack(1, melodySequence.get(i).getNote(), melodySequence.get(i).getDuration());
+			}
+
+			System.out.println();
+			// デバッグ用
+			for (int i = 0; i < melodySequence.size(); i++) {
+				System.out.print(melodySequence.get(i).getNote() + ", ");
 			}
 
 		} catch (InvalidMidiDataException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private void makeSecondaryDominantSequence(List<InputChordData> sequence) {
@@ -146,6 +174,10 @@ public class SequencerManager {
 				}
 			}
 		}
+	}
+
+	public void resetPosition() {
+		 position = TICK * 4;
 	}
 
 }
