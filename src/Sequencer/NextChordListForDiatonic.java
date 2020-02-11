@@ -26,10 +26,10 @@ public class NextChordListForDiatonic {
 	};
 
 	private static String[] nextListMajorKeyForF = {
-			"C", "Dm", "Em", "G7", "Am", "Bmb5"
+			"C", "Dm", "Em", "G7", "Bmb5"
 	};
-	private static double[] pMajorKeyForF = {
-			1 / 6, 1 / 6, 1 / 6, 1 / 6, 1 / 6, 1 / 6
+	private static double[] pMajorKeyForF = { // Amは避ける
+			1 / 5, 1 / 5, 1 / 5, 1 / 5, 1 / 5
 	};
 
 	private static String[] nextListMajorKeyForG7 = {
@@ -76,11 +76,11 @@ public class NextChordListForDiatonic {
 			1 / 3, 1 / 3, 1 / 3
 	};
 
-	private static String[] nextListMinorKeyForDm = {
-			"Am", "Bmb5", "C", "E7", "F", "G"
+	private static String[] nextListMinorKeyForDm = { // Cは避ける
+			"Am", "Bmb5", "E7", "F", "G"
 	};
 	private static double[] pMinorKeyForDm = {
-			1 / 6, 1 / 6, 1 / 6, 1 / 6, 1 / 6, 1 / 6
+			1 / 5, 1 / 5, 1 / 5, 1 / 5, 1 / 5
 	};
 
 	private static String[] nextListMinorKeyForE7 = {

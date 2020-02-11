@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class SimpleDiatonicStrategy {
+public class SimpleIntroStrategy {
 
 	private String startChordName;
 	private String endChordName;
@@ -12,7 +12,7 @@ public class SimpleDiatonicStrategy {
 	private String key;
 	Random r;
 
-	public SimpleDiatonicStrategy(String startChordName, String endChordName, int minLength, String key) {
+	public SimpleIntroStrategy(String startChordName, String endChordName, int minLength, String key) {
 		this.startChordName = startChordName;
 		this.endChordName = endChordName;
 		this.minLength = minLength;
@@ -28,33 +28,37 @@ public class SimpleDiatonicStrategy {
 
 		String currentChordName = start.getChordName();
 
-		do {
+		for (int i = 1; i < 8; i++) {
 			Chord currentChord = new Chord(currentChordName);
 			String[] nextList;
 			if (key.equals("major")) {
 				nextList = NextChordListForDiatonic.getNextChordListInMajorKey(currentChord.getChordName());
 				String nextChordName = determineNextChord(nextList);
 				// 転調判定
-				if(currentChordName.equals("Bmb5") && nextChordName.equals("E7")) {
+				if (currentChordName.equals("Bmb5") && nextChordName.equals("E7")) {
 					key = "minor";
 				}
+				sequence.add(new InputChordData(new Chord(nextChordName), tick, key));
 				currentChordName = nextChordName;
 			} else if (key.equals("minor")) {
 				nextList = NextChordListForDiatonic.getNextChordListInMinorKey(currentChord.getChordName());
 				String nextChordName = determineNextChord(nextList);
 				// 転調判定
-				if(currentChordName.equals("G") && nextChordName.equals("C")) {
+				if (currentChordName.equals("G") && nextChordName.equals("C")) {
 					key = "major";
 				}
+				sequence.add(new InputChordData(new Chord(nextChordName), tick, key));
 				currentChordName = nextChordName;
 			} else {
 				// 異常
 				return null;
 			}
+		}
 
-			Chord nextChord = new Chord(currentChordName);
-			sequence.add(new InputChordData(nextChord, tick, key));
-		} while ((sequence.size() < minLength) || (!currentChordName.equals(endChordName)));
+		// 繰り返し
+		//for (int i = 0; i < 8; i++) {
+		//	sequence.add(new InputChordData(sequence.get(i).getChord(), tick));
+		//}
 
 		return sequence;
 	}

@@ -1,5 +1,7 @@
 package Sequencer;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -57,32 +59,66 @@ public class SequencerManager {
 		sequencer.start();
 	}
 
+	public void outMIDI() throws IOException {
+		MidiSystem.write(sequence, 1, new File("data/test.mid"));
+	}
+
 	public void selectChordProgression() {
 		try {
 
 			// コード進行の生成
-			SimpleDiatonicStrategy strategy = new SimpleDiatonicStrategy("C", "C", 8, key);
-			List<InputChordData> sequence = strategy.makeSequence(960);
+			//GreenGreensStrategy strategy = new GreenGreensStrategy("C", "C", 8, key);
+			SimpleIntroStrategy strategy = new SimpleIntroStrategy("C", "C", 8, key);
+			List<InputChordData> chordSequence = strategy.makeSequence(480 * 4);
 
-			for (int i = 0; i < sequence.size(); i++) {
-				addChordToTrack(0, sequence.get(i).getChord(), sequence.get(i).getDuration());
+			// グランドピアノ
+			// 音色参考 https://mocha-java.com/program-change-sound-bank-1/
+			track.add(new MidiEvent(new ShortMessage(ShortMessage.PROGRAM_CHANGE, 0, 0, 0), TICK));
+			for (int i = 0; i < chordSequence.size(); i++) {
+				if(i == chordSequence.size()-1) {
+					addChordToTrack(0, chordSequence.get(i).getChord(), chordSequence.get(i).getDuration());
+				} else {
+					addChordToTrack(0, chordSequence.get(i).getChord(), chordSequence.get(i).getDuration()/4);
+					addChordToTrack(0, chordSequence.get(i).getChord(), chordSequence.get(i).getDuration()/4);
+					addChordToTrack(0, chordSequence.get(i).getChord(), chordSequence.get(i).getDuration()/4);
+					addChordToTrack(0, chordSequence.get(i).getChord(), chordSequence.get(i).getDuration()/4);
+				}
 			}
 
 			// セカンダリードミナントの利用
 			if (useSecondaryDominant) {
-				makeSecondaryDominantSequence(sequence);
+				makeSecondaryDominantSequence(chordSequence);
 			}
 
 			System.out.println();
 			// デバッグ用
-			for (int i = 0; i < sequence.size(); i++) {
-				System.out.print(sequence.get(i).getChord().getChordName() + ", ");
+			for (int i = 0; i < chordSequence.size(); i++) {
+				System.out.print(chordSequence.get(i).getChord().getChordName() + ", ");
+			}
+
+			// メロディの生成
+			SimpleMelodyStrategy mStrategy = new SimpleMelodyStrategy(chordSequence.get(0).getChord(), TICK*4*8, chordSequence);
+			List<Melody> melodySequence = mStrategy.makeSequence(TICK);
+			// addする前に楽譜の最初に戻す
+			resetPosition();
+
+			// アルトサックス
+			// 音色参考 https://mocha-java.com/program-change-sound-bank-1/
+			track.add(new MidiEvent(new ShortMessage(ShortMessage.PROGRAM_CHANGE, 1, 65, 0), TICK));
+
+			for(int i=0; i<melodySequence.size(); i++) {
+				addNoteToTrack(1, melodySequence.get(i).getNote(), melodySequence.get(i).getDuration());
+			}
+
+			System.out.println();
+			// デバッグ用
+			for (int i = 0; i < melodySequence.size(); i++) {
+				System.out.print(melodySequence.get(i).getNote() + ", ");
 			}
 
 		} catch (InvalidMidiDataException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private void makeSecondaryDominantSequence(List<InputChordData> sequence) {
@@ -94,23 +130,23 @@ public class SequencerManager {
 				String nextChordName = sequence.get(i + 1).getChord().getChordName();
 				if (currentChordName.equals("Am") && nextChordName.equals("Dm")) {
 					if (Math.random() < pSecondaryDominant) {
-						sequence.set(i, new InputChordData(new Chord("A7"), TICK));
+						sequence.set(i, new InputChordData(new Chord("A7"), TICK, key));
 					}
 				} else if (currentChordName.equals("Bmb5") && nextChordName.equals("Em")) {
 					if (Math.random() < pSecondaryDominant) {
-						sequence.set(i, new InputChordData(new Chord("B7"), TICK));
+						sequence.set(i, new InputChordData(new Chord("B7"), TICK, key));
 					}
 				} else if (currentChordName.equals("C") && nextChordName.equals("F")) {
 					if (Math.random() < pSecondaryDominant) {
-						sequence.set(i, new InputChordData(new Chord("C7"), TICK));
+						sequence.set(i, new InputChordData(new Chord("C7"), TICK, key));
 					}
 				} else if (currentChordName.equals("Dm") && nextChordName.equals("G")) {
 					if (Math.random() < pSecondaryDominant) {
-						sequence.set(i, new InputChordData(new Chord("D7"), TICK));
+						sequence.set(i, new InputChordData(new Chord("D7"), TICK, key));
 					}
 				} else if (currentChordName.equals("Em") && nextChordName.equals("Am")) {
 					if (Math.random() < pSecondaryDominant) {
-						sequence.set(i, new InputChordData(new Chord("E7"), TICK));
+						sequence.set(i, new InputChordData(new Chord("E7"), TICK, key));
 					}
 				}
 			}
@@ -121,31 +157,35 @@ public class SequencerManager {
 				String nextChordName = sequence.get(i + 1).getChord().getChordName();
 				if (currentChordName.equals("F") && nextChordName.equals("Bmb5")) {
 					if (Math.random() < pSecondaryDominant) {
-						sequence.set(i, new InputChordData(new Chord("F7"), TICK));
+						sequence.set(i, new InputChordData(new Chord("F7"), TICK, key));
 					}
 				} else if (currentChordName.equals("G") && nextChordName.equals("C")) {
 					if (Math.random() < pSecondaryDominant) {
-						sequence.set(i, new InputChordData(new Chord("G7"), TICK));
+						sequence.set(i, new InputChordData(new Chord("G7"), TICK, key));
 					}
 				} else if (currentChordName.equals("Am") && nextChordName.equals("Dm")) {
 					if (Math.random() < pSecondaryDominant) {
-						sequence.set(i, new InputChordData(new Chord("A7"), TICK));
+						sequence.set(i, new InputChordData(new Chord("A7"), TICK, key));
 					}
 				} else if (currentChordName.equals("Bmb5") && nextChordName.equals("E")) {
 					if (Math.random() < pSecondaryDominant) {
-						sequence.set(i, new InputChordData(new Chord("B7"), TICK));
+						sequence.set(i, new InputChordData(new Chord("B7"), TICK, key));
 					}
 				} else if (currentChordName.equals("C") && nextChordName.equals("F")) {
 					if (Math.random() < pSecondaryDominant) {
-						sequence.set(i, new InputChordData(new Chord("C7"), TICK));
+						sequence.set(i, new InputChordData(new Chord("C7"), TICK, key));
 					}
 				} else if (currentChordName.equals("Dm") && nextChordName.equals("G")) {
 					if (Math.random() < pSecondaryDominant) {
-						sequence.set(i, new InputChordData(new Chord("D7"), TICK));
+						sequence.set(i, new InputChordData(new Chord("D7"), TICK, key));
 					}
 				}
 			}
 		}
+	}
+
+	public void resetPosition() {
+		 position = TICK * 4;
 	}
 
 }

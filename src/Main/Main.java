@@ -1,5 +1,7 @@
 package Main;
 
+import java.io.IOException;
+
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 
@@ -12,7 +14,8 @@ public class Main {
 			SequencerManager manager = new SequencerManager();
 			manager.selectChordProgression();
 			manager.play();
-		} catch (InvalidMidiDataException | MidiUnavailableException e) {
+			manager.outMIDI();
+		} catch (InvalidMidiDataException | MidiUnavailableException | IOException e) {
 			e.printStackTrace();
 		}
 	}
